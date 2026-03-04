@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Advocate Pro - Huquqiy Ekspertiza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0a0a0c;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .legal-title { font-family: 'Playfair Display', serif; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .analysis-step {
+            border-left: 2px solid #3b82f6;
+            padding-left: 20px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .show-step { animation: slideIn 0.5s forwards; }
+
+        .law-badge {
+            background: linear-gradient(90deg, #1e40af, #3b82f6);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .advocate-card {
+            background: #ffffff;
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body class="py-10 px-4">
+
+<div class="max-w-3xl mx-auto">
+    <div class="text-center mb-12">
+        <h1 class="legal-title text-5xl font-bold mb-4 italic text-blue-500">AI Advocate</h1>
+        <div class="h-1 w-20 bg-blue-600 mx-auto rounded-full"></div>
+        <p class="mt-4 text-slate-400 text-lg">Muammoingizni to'liq tahlil qilamiz va asosiy qonuniy moddani aniqlaymiz.</p>
+    </div>
+
+    <div id="inputSection" class="glass-card rounded-3xl p-8 mb-8">
+        <label class="block text-sm font-medium text-slate-400 mb-4 uppercase tracking-widest">Muammo tavsifi</label>
+        <textarea id="userInput" 
+            class="w-full bg-black/40 border border-slate-700 rounded-2xl p-5 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition min-h-[150px] text-lg"
+            placeholder="Masalan: Men 3 oy oldin qarz bergan edim, lekin u qaytarmayapti, o'rtada tilxat bor..."></textarea>
+        
+        <button onclick="startAnalysis()" 
+            class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.01] active:scale-95">
+            HUQUQIY TAHLILNI BOSHLASH
+        </button>
+    </div>
+
+    <div id="analysisBox" class="hidden mb-8 space-y-4">
+        <h3 class="text-blue-400 font-bold uppercase text-xs tracking-widest mb-6">AI Ish jarayoni:</h3>
+        <div id="step1" class="analysis-step">🧐 Muammo ichidagi asosiy faktlar ajratib olinmoqda...</div>
+        <div id="step2" class="analysis-step">📚 O'zbekiston Respublikasi Kodekslari bilan solishtirilmoqda...</div>
+        <div id="step3" class="analysis-step">⚖️ Tegishli huquqiy modda aniqlanmoqda...</div>
+    </div>
+
+    <div id="resultBox" class="hidden space-y-6">
+        <div class="law-badge inline-block px-6 py-2 rounded-full text-sm font-black uppercase tracking-tighter" id="finalArticleTitle">
+            </div>
+
+        <div class="glass-card rounded-3xl p-8">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400 italic">Huquqiy Ekspertiza Natijasi</h2>
+            <p id="legalAnalysis" class="text-slate-300 leading-relaxed text-lg mb-6"></p>
+            
+            <div class="bg-blue-500/10 border border-blue-500/20 p-6 rounded-2xl mb-8">
+                <p class="text-sm text-blue-300 uppercase font-bold mb-2">Qonuniy Asos:</p>
+                <p id="articleQuote" class="italic text-white"></p>
+            </div>
+
+            <div class="advocate-card rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="space-y-2">
+                    <p class="text-xs uppercase font-bold text-slate-500">Tavsiya etilgan mutaxassis</p>
+                    <h4 id="advName" class="text-2xl font-bold"></h4>
+                    <p id="advLoc" class="text-slate-600 font-medium"></p>
+                    <p id="advPhone" class="text-blue-600 font-bold text-xl"></p>
+                </div>
+                <div class="bg-slate-100 p-4 rounded-xl">
+                    <span class="text-4xl">👨‍⚖️</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function startAnalysis() {
+        const input = document.getElementById('userInput').value;
+        if (input.length < 15) {
+            alert("Iltimos, muammoni to'liqroq yozing (kamida 15 ta belgi).");
+            return;
+        }
+
+        document.getElementById('inputSection').classList.add('opacity-50', 'pointer-events-none');
+        document.getElementById('analysisBox').classList.remove('hidden');
+
+        // Bosqichma-bosqich ko'rsatish
+        setTimeout(() => document.getElementById('step1').classList.add('show-step'), 800);
+        setTimeout(() => document.getElementById('step2').classList.add('show-step'), 1800);
+        setTimeout(() => document.getElementById('step3').classList.add('show-step'), 2800);
+        
+        setTimeout(() => {
+            document.getElementById('analysisBox').classList.add('hidden');
+            showResult(input);
+        }, 4000);
+    }
+
+    function showResult(text) {
+        const resultBox = document.getElementById('resultBox');
+        resultBox.classList.remove('hidden');
+
+        // Mantiqiy tahlil (AI simulyatsiyasi)
+        let data = {};
+        
+        if (text.includes("qarz") || text.includes("pul")) {
+            data = {
+                modda: "Fuqarolik Kodeksi, 733-modda",
+                tahlil: "Sizning holatingiz 'Qarz shartnomasi' elementlarini o'z ichiga oladi. O'rtada tilxat mavjudligi bu bitimning yozma shaklda tuzilganligini isbotlaydi. Tahlil natijasida aniqlandiki, qarzdor majburiyatni ixtiyoriy bajarmagan taqdirda, siz sud tartibida asosiy qarz va unga qo'shilgan foizlarni undirish huquqiga egasiz.",
+                quote: "733-modda: Agar fuqarolar o'rtasidagi qarz shartnomasi miqdori bazaviy hisoblash miqdorining o'n baravaridan oshsa, u yozma shaklda tuzilishi shart.",
+                adv: { ism: "Rustam Kamolov", tel: "+998 90 455 00 11", joy: "Toshkent sh., Shayxontohur tumani" }
+            };
+        } else if (text.includes("ish") || text.includes("maosh")) {
+            data = {
+                modda: "Mehnat Kodeksi, 161-modda",
+                tahlil: "Sizning mehnat huquqlaringiz buzilgan. Ish beruvchi shartnomani bekor qilishda qonunda belgilangan ogohlantirish muddatlariga amal qilmaganligi aniqlandi. Tahlil yakuni: Siz o'z o'rningizga qaytish va ma'naviy zararni qoplashni talab qilishga haqlisiz.",
+                quote: "161-modda: Mehnat shartnomasini ish beruvchining tashabbusi bilan bekor qilish asosli bo'lishi shart.",
+                adv: { ism: "Nigora Alimova", tel: "+998 93 111 22 33", joy: "Andijon sh., Navoiy ko'chasi" }
+            };
+        } else {
+            data = {
+                modda: "Fuqarolik Kodeksi, 234-modda",
+                tahlil: "Murojaatingiz to'liq o'rganildi. Ushbu muammo majburiyatlar huquqiga oid bo'lib, tomonlar o'rtasidagi kelishuvning buzilishi bilan bog'liq. Tahlil natijasiga ko'ra, siz qonuniy tartibda o'z huquqlaringizni sud organlari orqali himoya qilishingiz mumkin.",
+                quote: "234-modda: Majburiyat — bir shaxsning ikkinchi shaxs foydasiga muayyan harakatni amalga oshirish majburiyatidir.",
+                adv: { ism: "Bobur Mansurov", tel: "+998 97 777 55 44", joy: "Buxoro sh., Markaziy tuman" }
+            };
+        }
+
+        document.getElementById('finalArticleTitle').innerText = data.modda;
+        document.getElementById('legalAnalysis').innerText = data.tahlil;
+        document.getElementById('articleQuote').innerText = data.quote;
+        document.getElementById('advName').innerText = data.adv.ism;
+        document.getElementById('advPhone').innerText = data.adv.tel;
+        document.getElementById('advLoc').innerText = data.adv.joy;
+
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+</script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v67327c56f0bb4ef8b305cae61679db8f1769101564043" integrity="sha512-rdcWY47ByXd76cbCFzznIcEaCN71jqkWBBqlwhF1SY7KubdLKZiEGeP7AyieKZlGP9hbY/MhGrwXzJC/HulNyg==" data-cf-beacon='{"version":"2024.11.0","token":"e3c1c9af36de41759418005494a48906","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
